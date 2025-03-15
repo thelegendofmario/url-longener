@@ -13,14 +13,26 @@ def main():
     url = request.form.get("url")
     #print(url)
     #print(globslug)
-    globslug = randslug(len(url)+random.randrange(300, 500))
+    slug = randslug(len(url)+random.randrange(300, 500))
+    data = (slug, url)
     
+    curs.execute("INSERT INTO urls(slug, og) VALUES(?, ?)", data)
+    db.commit()
     #print(globslug)
-    return render_template('index.html', globslug=globslug)
+    return render_template('index.html', globslug=slug)
 
 @app.route("/<wslug>")
 def redir(wslug):
-    return f"<h1>hello, {escape(wslug)}</h1>"
+    db = sqlite3.connect("urls.db")
+    curs = db.cursor()
+    to_slug = escape(wslug)
+    all_data_request = curs.execute("SELECT * FROM urls")
+    all_data = all_data_request.fetchall()
+    for i in all_data:
+        if i[0] == to_slug:
+            return redirect(f"https://{i[1]}")
+        
+    return render_template('fail.html')
 
 
 
