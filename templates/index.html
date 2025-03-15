@@ -1,5 +1,18 @@
+<head>
+    <title>URL lengthener</title>
+</head>
+
+<body>
+<h1>URL lengthener!!</h1>
+<h4>why? <i>why not?</i></h4>
 <form method="post">
     What link to you want to <s>shorten</s> lengthen? <input name="url"> <br><br>
     
-    <button type="submit">Submit</button>
+    <button type="submit">Submit</button> <br><br>
+    {% if globslug %}
+    your url is: <a href="/{{globslug}}">here</a> ({{globslug}})
+    {% else %}
+    submit a url to get started.
+    {% endif %}
 </form>
+</body>
