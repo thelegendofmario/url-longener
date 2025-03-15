@@ -6,20 +6,24 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET", "POST"])
 def main():
+    
     db = sqlite3.connect("urls.db")
     curs = db.cursor()
+# with app.request_context():
     if request.method == 'GET':
         return render_template('index.html')
+
     url = request.form.get("url")
     #print(url)
-    #print(globslug)
-    slug = randslug(len(url)+random.randrange(300, 500))
+#print(globslug)
+    slug = randslug(len(url)+random.randrange(100, 300))
     data = (slug, url)
     
     curs.execute("INSERT INTO urls(slug, og) VALUES(?, ?)", data)
     db.commit()
     #print(globslug)
-    return render_template('index.html', globslug=slug)
+    
+    return render_template('index.html', globslug=slug).encode("utf-8")
 
 @app.route("/<wslug>")
 def redir(wslug):
@@ -38,7 +42,7 @@ def redir(wslug):
 
 
 def randslug(length):
-    return randstring(length+random.randrange(300,500))
+    return randstring(length+random.randrange(100,200))
 
 def randstring(length):
     string = []
@@ -47,3 +51,6 @@ def randstring(length):
         string.append(alph[random.randrange(len(alph)-1)])
 
     return "".join(string)
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=8080)
